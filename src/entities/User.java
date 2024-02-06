@@ -1,11 +1,14 @@
 package entities;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 import exception.UserException;
 
-public class User {
+public class User implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
 	private String username;
 	private String email;
 	private LocalDate date_nasc;
