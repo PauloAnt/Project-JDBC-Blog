@@ -9,6 +9,6 @@ public interface UserDao {
 	void insert(User user);
 	void update(User user);
 	void deleteById(Integer num);
-	Post findById(Integer num);
-	List<Post> findAll();
+	User findById(Integer num);
+	List<User> findAll();
 }

@@ -1,29 +1,36 @@
 package entities;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.Objects;
 
 import exception.UserException;
 
 public class User implements Serializable{
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", email=" + email + ", date_nasc=" + date_nasc
+				+ ", password=" + password + "]";
+	}
 	private static final long serialVersionUID = 1L;
 	
+	private int id;
 	private String username;
 	private String email;
-	private LocalDate date_nasc;
+	private Date date_nasc;
 	private String password;
 	
-	public User(String username, String email, LocalDate date_nasc, String password) {
-		if (password.length() < 4) {
-			throw new UserException("The password must be longer than 4 letters");
-		}
-		else {
-			this.username = username;
-			this.email = email;
-			this.date_nasc = date_nasc;
-			this.password = password;
-		}
+	public User() {
+		
+	}
+
+	public User(int id, String username, String email, Date date_nasc, String password) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.email = email;
+		this.date_nasc = date_nasc;
+		this.password = password;
 	}
 
 	@Override
@@ -50,6 +57,13 @@ public class User implements Serializable{
 		else password = new_password;
 	}
 	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
@@ -66,15 +80,18 @@ public class User implements Serializable{
 		this.email = email;
 	}
 
-	public LocalDate getDate_nasc() {
+	public Date getDate_nasc() {
 		return date_nasc;
 	}
 
-	public void setDate_nasc(LocalDate date_nasc) {
+	public void setDate_nasc(Date date_nasc) {
 		this.date_nasc = date_nasc;
 	}
 
 	public String getPassword() {
 		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }
