@@ -5,13 +5,21 @@ import java.io.Serializable;
 public class Post implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
+	public int id;
 	public String title;
 	public String category;
 	public String content;
-	public User user;
+	public String creator;
 	
-	public Post(User user, String title, String category, String content) {
-		this.user = user;
+	public Post(int id, String creator, String title, String category, String content) {
+		this.id = id;
+		this.creator = creator;
+		this.title = title;
+		this.category = category;
+		this.content = content;
+	}
+	public Post(String creator, String title, String category, String content) {
+		this.creator = creator;
 		this.title = title;
 		this.category = category;
 		this.content = content;
@@ -19,12 +27,20 @@ public class Post implements Serializable{
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Title: " + title);
-		sb.append("Categoria: " + category);
-		sb.append("Content: " + content);
+		sb.append("Title: " + title + "\n");
+		sb.append("Categoria: " + category + "\n");
+		sb.append("Content: " + content + "\n");
 		return sb.toString();
 	}
-	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -48,6 +64,16 @@ public class Post implements Serializable{
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+	
+
 	
 	
 }

@@ -32,7 +32,6 @@ public class UserDaoJDBC implements UserDao{
 			ps.setDate(3, user.getDate_nasc());
 			ps.setString(4, user.getPassword());
 			ps.executeUpdate();
-			System.out.println("Inserido com sucesso!");
 		}
 		catch(SQLException e) {
 			System.out.println(e.getMessage());
@@ -44,16 +43,70 @@ public class UserDaoJDBC implements UserDao{
 
 	@Override
 	public void update(User user) {
-		// TODO Auto-generated method stub
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(
+			"UPDATE user SET username = ?, email = ?, date_nasc = ?, password = ? WHERE id = ?"
+			);
+			ps.setString(1, user.getUsername());
+			ps.setString(2, user.getEmail());
+			ps.setDate(3, user.getDate_nasc());
+			ps.setString(4, user.getPassword());
+			ps.setInt(5, user.getId());
+			ps.executeUpdate();
+		}
+		catch(SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(ps);
+		}
 		
 	}
 
 	@Override
 	public void deleteById(Integer num) {
-		// TODO Auto-generated method stub
+		PreparedStatement ps = null;
+		try{
+			ps = conn.prepareStatement(
+					"DELETE FROM user WHERE id = ?"
+			);
+			ps.setInt(1, num);
+			ps.executeUpdate();
+		}
+		catch(SQLException e) {
+			throw new DBException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(ps);
+		}
 		
 	}
 
+	@Override
+	public User findByUsername(String username) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement(
+			"SELECT id, username, email, date_nasc from user WHERE user.username = ?");
+			st.setString(1, username);
+			rs = st.executeQuery();
+			if (rs.next()) {
+				User user = instUser(rs);
+				return user;
+			}
+			return null;
+		}
+		catch(SQLException e) {
+			throw new DBException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+	}
+	
 	@Override
 	public User findById(Integer num) {
 		PreparedStatement st = null;

@@ -9,6 +9,6 @@ public class DaoFactory {
 	}
 	
 	public static PostDao createPostDao() {
-		return new PostDaoJDBC();
+		return new PostDaoJDBC(DB.getConnection());
 	}
 }

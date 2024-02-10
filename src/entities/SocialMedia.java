@@ -1,75 +1,86 @@
 package entities;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import interfaces.Blog;
+import model.dao.DaoFactory;
+import model.dao.PostDao;
+import model.dao.UserDao;
 
-// Acrescentar a programação defensiva
-// Transferir os dados para o banco de dados
-
-public class SocialMedia implements Blog{
-	private Map<User, Boolean> users = new HashMap<>();
-	public Map<User, List<Post>> posts = new HashMap<>();
-	public List<Post> recents_posts = new ArrayList<>();
+public class SocialMedia{
+	private UserDao userBD = DaoFactory.createUserDao();
+	private PostDao postBD = DaoFactory.createPostDao();
 	
-	public void registerUser(String username, String email, String data_nasc, String password) {
-		LocalDate aux = LocalDate.parse(data_nasc, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		
-		User user = new User(username, email, aux, password);
-		users.put(user, false);
+	private Map<Integer, Boolean> isLogado = new HashMap();
+	
+	public void register(User user) {
+		userBD.insert(user);
 		System.out.println("Registrado com sucesso!");
 	}
 	
 	public void logar(String username, String password) {
-		for(User user: users.keySet()) {
-			if (user.equals(username)) {
-				System.out.println("Logado com sucesso!");
-				break;
+		User findUser = userBD.findByUsername(username);
+		if(findUser != null) {
+			isLogado.put(findUser.getId(), true);
+			System.out.println("Logado com sucesso!");
+		}
+		else System.out.println("Conta inexistente, crie sua conta.");
+		
+	}
+	
+	public void mostrarPostRecents() {
+		List<Post> postRecents = postBD.findAll();
+		if (postRecents.size() > 1) {
+			for(int i = postRecents.size() - 2; i < postRecents.size(); i++) {
+				System.out.println(postRecents.get(i) + "\n");
 			}
 		}
-		System.out.println("Conta inexistente!");
+		else System.out.println("Você não possui postagens.");
+		
 	}
-	
-	@Override
-	public void createPost(User user, Post post) {
-		recents_posts.add(post);
-		if (posts.containsKey(user)) {
-			List<Post> aux = posts.get(user);
-			aux.add(post);
-		} else {
-			List<Post> aux = new ArrayList<>();
-			aux.add(post);
-			posts.put(user, aux);
-		}
-	}
-	
-	@Override
+
 	public void mostrarPostUser(User user) {
-		List<Post> aux = posts.get(user);
-		int cont = 0;
-		for(Post publi: aux) {
-			cont += 1;
-			System.out.print(cont + "- ");
-			System.out.println(publi);
+		List<Post> postsUser = postBD.findAll();
+		List<Post> foundPost = new ArrayList();
+		for(Post obj : postsUser) {
+			if (obj.getCreator().equals(user.getUsername())) {
+				foundPost.add(obj);
+			}
 		}
+		if (foundPost.size() > 0) {
+			for(Post obj : foundPost) {
+				System.out.println("Número da postagem: " + obj.getId());
+				System.out.println(obj);
+			}
+		}
+		else System.out.println("Você não tem posts criados.");
+		
+	}
+
+	public User findByUsername(String username) {
+		return userBD.findByUsername(username);
 	}
 	
-	@Override
-	public void mostrarPostRecents() {
-		for(int i = posts.size(); i > posts.size() - 3; i--) {
-			System.out.println(recents_posts.get(i));
-		}
+	public void createPost(User user, Post post) {
+		postBD.insert(post, user);
+		System.out.println("Post criado com sucesso!");
+		
+	}
+
+	public void editPost(User user, Post post, int id) {
+		postBD.update(post, user, id);
+		System.out.println("Post editado com sucesso!");
 	}
 	
-	@Override
 	public void delPost(User user, int indice) {
-		posts.get(user).remove(indice);
+		postBD.deleteById(indice, user);
+		System.out.println("Post deletado com sucesso!");
+		
 	}
+	
+	
 	
 	
 }

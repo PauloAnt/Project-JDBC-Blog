@@ -25,13 +25,19 @@ public class User implements Serializable{
 	}
 
 	public User(int id, String username, String email, Date date_nasc, String password) {
-		super();
 		this.id = id;
 		this.username = username;
 		this.email = email;
 		this.date_nasc = date_nasc;
 		this.password = password;
 	}
+	public User(String username, String email, Date date_nasc, String password) {
+		this.username = username;
+		this.email = email;
+		this.date_nasc = date_nasc;
+		this.password = password;
+	}
+
 
 	@Override
 	public int hashCode() {
